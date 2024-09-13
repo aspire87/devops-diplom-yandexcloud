@@ -38,23 +38,18 @@
 # #   members         = ["serviceAccount:${yandex_iam_service_account.sa.id}"]
 # # }
 
-# // Use keys to create bucket
-# resource "yandex_storage_bucket" "test" {
-#   access_key = yandex_iam_service_account_static_access_key.sa-static-key.access_key
-#   secret_key = yandex_iam_service_account_static_access_key.sa-static-key.secret_key
-#   bucket = "tf-au-net-dip"
-#   max_size = 1073741824
-#   versioning {
-#     enabled = true
-#   }
-#   grant {
-#     id = yandex_iam_service_account.sa.id
-#     permissions = ["READ", "WRITE"]
-#     type        = "CanonicalUser"
-#   }
-# }
-
-
-# data "key" "name" {
-  
-# }
+// Use keys to create bucket
+resource "yandex_storage_bucket" "test" {
+  access_key = yandex_iam_service_account_static_access_key.storage-static-key.access_key
+  secret_key = yandex_iam_service_account_static_access_key.storage-static-key.secret_key
+  bucket     = var.s3_bucket_name
+  max_size   = 1073741824
+  versioning {
+    enabled = true
+  }
+  grant {
+    id          = yandex_iam_service_account.storage.id
+    permissions = ["READ", "WRITE"]
+    type        = "CanonicalUser"
+  }
+}

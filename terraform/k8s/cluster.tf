@@ -20,7 +20,8 @@ resource "yandex_kubernetes_cluster" "k8s-regional" {
   }
   depends_on = [
     yandex_resourcemanager_folder_iam_binding.k8s-clusters-agent,
-    yandex_resourcemanager_folder_iam_binding.images-puller
+    yandex_resourcemanager_folder_iam_binding.images-puller,
+    yandex_resourcemanager_folder_iam_binding.k8s-admin
   ]
   kms_provider {
     key_id = yandex_kms_symmetric_key.kms-key-k8s.id

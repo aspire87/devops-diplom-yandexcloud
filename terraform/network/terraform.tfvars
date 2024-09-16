@@ -58,4 +58,4 @@ external_static_ips = {
 
 ###  IP WHITE LIST ###
 
-white_ips_for_master = ["49.13.241.55/32","95.31.41.55/32"]
+white_ips_for_master = ["0.0.0.0/0","95.31.41.55/32"]

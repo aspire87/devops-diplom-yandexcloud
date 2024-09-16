@@ -1,43 +1,3 @@
-# // Create SA 
-# resource "yandex_iam_service_account" "sa" {
-#   folder_id = var.folder_id
-#   name      = "storage"
-# }
-
-# // Grant permissions
-# resource "yandex_resourcemanager_folder_iam_binding" "sa-editor" {
-#   folder_id = var.folder_id
-#   role      = "storage.admin"
-#   members    = ["serviceAccount:${yandex_iam_service_account.sa.id}"]
-# }
-
-# // Grant permissions
-# resource "yandex_resourcemanager_folder_iam_binding" "ydb-editor" {
-#   folder_id = var.folder_id
-#   role      = "ydb.admin"
-#   members    = ["serviceAccount:${yandex_iam_service_account.sa.id}"]
-# }
-
-# // Create Static Access Keys
-# resource "yandex_iam_service_account_static_access_key" "sa-static-key" {
-#   service_account_id = yandex_iam_service_account.sa.id
-#   description        = "static access key for object storage"
-# }
-
-# # // Grant permissions
-# # resource "yandex_resourcemanager_folder_iam_binding" "storage-admin" {
-# #   folder_id = var.folder_id
-# #   role            = "storage.editor"
-# #   members         = ["serviceAccount:${yandex_iam_service_account.sa.id}"]
-# # }
-
-# # // Grant permissions
-# # resource "yandex_resourcemanager_folder_iam_binding" "ydb-admin" {
-# #   folder_id = var.folder_id
-# #   role            = "ydb.editor"
-# #   members         = ["serviceAccount:${yandex_iam_service_account.sa.id}"]
-# # }
-
 // Use keys to create bucket
 resource "yandex_storage_bucket" "test" {
   access_key = yandex_iam_service_account_static_access_key.storage-static-key.access_key
@@ -52,4 +12,18 @@ resource "yandex_storage_bucket" "test" {
     permissions = ["READ", "WRITE"]
     type        = "CanonicalUser"
   }
+}
+
+
+data "template_file" "storage-key-template" {
+  template = file("key.tf.tpl")
+  vars = {
+    access_key = yandex_iam_service_account_static_access_key.storage-static-key.access_key
+    secret_key = nonsensitive(yandex_iam_service_account_static_access_key.storage-static-key.secret_key)
+  }
+}
+
+resource "local_file" "key_s3_storage_key_file" {
+  filename = "../../storage.key"
+  content  = data.template_file.storage-key-template.rendered
 }

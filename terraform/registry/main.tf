@@ -11,7 +11,7 @@ terraform {
     }
     bucket                      = "tf-au-net-dip"
     region                      = "ru-central1"
-    key                         = "s3-terraform.tfstate"
+    key                         = "registry-terraform.tfstate"
     shared_credentials_files    = ["../../storage.key"]
     skip_region_validation      = true
     skip_credentials_validation = true

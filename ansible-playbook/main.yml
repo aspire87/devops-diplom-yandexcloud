@@ -1,0 +1,69 @@
+---
+- name: Install packages
+  hosts: all
+  become: true
+  tasks:
+    - name: Install require packages
+      ansible.builtin.include_tasks:
+        file: install-packages.yaml
+
+- name: Init cluster k8s with kubeadm
+  hosts: k8s-node-01
+  become: true
+
+  tasks:
+    - name: Init cluster
+      ansible.builtin.include_tasks:
+        file: init_cluster.yaml
+
+- name: Join workers to cluster
+  hosts:
+    - k8s-node-02
+    - k8s-node-03
+  become: true
+  
+  tasks:
+    - name: Join to cluster
+      ansible.builtin.include_tasks:
+        file: join_cluster.yaml
+
+- name: Check cluster is Ready
+  hosts: k8s-node-01
+  gather_facts: false
+
+  tasks:
+    - name: Get cluster nodes info
+      become: yes
+      become_user: aspire
+      shell: kubectl get nodes
+      register: kubectl_nodes
+
+    - name: Check is Ready
+      ansible.builtin.assert:
+        that:
+          - "'Ready' in kubectl_nodes.stdout_lines[1]"
+          - "'Ready' in kubectl_nodes.stdout_lines[2]" 
+          - "'Ready' in kubectl_nodes.stdout_lines[3]"
+        success_msg: "Cluster is Ready"
+        fail_msg: "Cluster is NotReady !!!"
+
+- name: Deploy cluster monitoring and gitlab-runner with helm
+  hosts: k8s-node-01
+  become: true
+
+  tasks:
+    - name: Install Helm on master node
+      ansible.builtin.include_tasks:
+        file: helm_install.yaml
+
+    - name: Deploy prometheus stack to cluster
+      ansible.builtin.include_tasks:
+        file: monitoring/monitoring.yaml
+
+    - name: Deploy gitlab-runner to cluster
+      ansible.builtin.include_tasks:
+        file: gitlab/gitlab_runner.yaml
+
+        
+
+    

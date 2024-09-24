@@ -1,6 +1,6 @@
 ###  CLOUD ###
 cloud_id     = "b1gjmftgjegm4ag26bp3"
-folder_id    = "b1glbqvicf7rscg13dmp"
+folder_id    = "b1g3edgsv67oiqdg8t1f"
 default_zone = "ru-central1-a"
 
 

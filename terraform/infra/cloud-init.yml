@@ -1,0 +1,20 @@
+#cloud-config
+
+users:
+  - name: aspire
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: sudo
+    lock_passwd: false
+    # password - netology-diplom
+    passwd: $6$OZQkmEcwM5bmFL8x$oq.8qh/tb1ypPCqLdQzUW8cA8R0s/4AvyfW7ol1yymWkiHQ78Pb1KRTjV3Vroji09S2nUD6RyXA0Q./h9UKF2.
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+package_update: true
+package_upgrade: false
+packages:
+  - vim
+  - yum-utils
+  - curl
+  - git
+  - wget

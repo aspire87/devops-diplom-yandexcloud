@@ -3,9 +3,12 @@
 .terraform*
 
 !.terraformrc
+
 # .tfstate files
 *.tfstate
 *.tfstate.*
 *.json
 # own secret vars store.
-personal.auto.tfvars
+*.auto.tfvars
+*.pub
+*.key

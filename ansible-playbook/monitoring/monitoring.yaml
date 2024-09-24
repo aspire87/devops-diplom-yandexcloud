@@ -1,0 +1,24 @@
+---
+- name: Add prometheus helm chart
+  become: true
+  become_user: aspire
+  kubernetes.core.helm_repository:
+    name: prometheus-community
+    repo_url: https://prometheus-community.github.io/helm-charts
+
+- name: Deploy monitoring stack
+  become: true
+  become_user: aspire
+  kubernetes.core.helm:
+    atomic: true
+    name: prometheus
+    chart_ref: prometheus-community/kube-prometheus-stack
+    chart_version: 62.7.0
+    create_namespace: true
+    release_namespace: monitoring
+    values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
+          
+- name: Wait 2 minutes when  pods up
+  ansible.builtin.wait_for:
+    timeout: 120
+    msg: "Waiting that monitoring pods is running....."

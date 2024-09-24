@@ -12,3 +12,4 @@
 personal.auto.tfvars
 
 *.key
+.vscode

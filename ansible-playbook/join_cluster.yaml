@@ -1,0 +1,19 @@
+---
+
+- name: Join worker nodes to cluster
+  become: yes
+  become_user: aspire
+  args:
+    chdir: $HOME
+    creates: "join_workers.log"
+  shell: "sudo {{ hostvars['k8s-node-01'].join_command }} >> join_workers.log"
+  register: join_output
+
+- name: debug
+  ansible.builtin.debug:
+    msg: "{{ join_output }}"
+
+- name: Wait 2 minutes when calico pods up  on worker nodes
+  ansible.builtin.wait_for:
+    timeout: 120
+  when: join_output.changed

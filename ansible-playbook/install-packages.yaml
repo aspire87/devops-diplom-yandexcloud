@@ -1,0 +1,94 @@
+---
+- name: Prepare nodes | Config hostname
+  ansible.builtin.command: "hostnamectl set-hostname {{ inventory_hostname }}"
+  register: res
+  changed_when: res.rc == 0
+
+- name: Prepare nodes | Set DNS nodes values
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+    state: present
+  with_items: "{{ local_ip }}"
+
+- name: Add require modules on 
+  lineinfile:
+    dest: /etc/modules-load.d/containerd.conf
+    line: "{{ item }}"
+    create: yes
+  loop:
+    - overlay
+    - br_netfilter
+
+- name: Load containerd modules on 
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - overlay
+    - br_netfilter
+
+- name: Apply sysctl required settings on 
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_file: /etc/sysctl.d/99-kubernetes.conf
+    reload: yes
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.ipv4.ip_forward
+    - net.bridge.bridge-nf-call-ip6tables
+
+- name: Install require packages on 
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https 
+      - ca-certificates 
+      - curl 
+      - gpg
+      - containerd
+    state: present
+    update_cache: yes
+    force_apt_get: yes
+
+- name: Start and enable containerd on 
+  ansible.builtin.service:
+    name: containerd
+    state: started
+    enabled: yes
+
+- name: Create directory for keyrings on 
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    mode: 0755
+    state: directory
+
+- name: Add k8s apt Key 
+  ansible.builtin.apt_key:
+    url: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
+    keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    state: present
+
+- name: Add k8s repo on 
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /"
+    state: present
+    filename: kubernetes
+    update_cache: yes
+    mode: 0644
+
+- name: Install k8s packages
+  ansible.builtin.apt:
+    name:
+      - kubectl
+      - kubeadm
+      - kubelet
+    state: present
+    update_cache: yes
+    force_apt_get: yes
+
+- name: Start and enable kubelet
+  ansible.builtin.service:
+    name: kubelet
+    state: started
+    enabled: yes

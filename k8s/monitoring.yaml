@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: diplom-ingress-mon
+  namespace: monitoring
+  labels:
+    name: diplom-ingress-mon
+    author: au
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: diplom-au.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/grafana"
+            backend:
+              service:
+                name: prometheus-grafana
+                port:
+                  number: 80

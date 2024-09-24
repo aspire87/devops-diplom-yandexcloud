@@ -1,0 +1,57 @@
+---
+- name: Check previous init and config
+  ansible.builtin.stat:
+    path: /home/aspire/.kube/config
+  register: kube_config  
+
+- name: debug 
+  ansible.builtin.debug:
+    msg: "{{ kube_config }}"
+
+- block:
+    - name: initialize the cluster
+      become: yes
+      become_user: aspire
+      args:
+        chdir: $HOME
+      shell: " sudo kubeadm init --v=5 --apiserver-advertise-address={{ ansible_facts.default_ipv4.address }} --pod-network-cidr 10.244.0.0/16 --apiserver-cert-extra-sans={{ ansible_host }}"
+
+    - name: Create .kube directory on {{ inventory_hostname }}
+      become: yes
+      become_user: aspire
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: "0755"
+
+    - name: Copy admin.conf to user's kube config  on {{ inventory_hostname }}
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/aspire/.kube/config
+        remote_src: yes
+        owner: aspire
+        group: aspire
+        mode: 0644
+
+    - name: Sleep 2 minutes before install CNI
+      ansible.builtin.wait_for:
+        timeout: 120
+
+    - name: Install CNI Calico
+      become: yes
+      become_user: aspire
+      ansible.builtin.shell: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml --validate=false
+      register: calico_output
+  
+    - name: Sleep 2 minutes after install CNI
+      ansible.builtin.wait_for:
+        timeout: 120
+  when: not kube_config.stat.exists
+
+- name: Get join command for  workers  on {{ inventory_hostname }}
+  shell: kubeadm token create --print-join-command
+  register: join_command
+
+- name: Set join command for worker nodes
+  set_fact:
+    join_command: "{{ join_command.stdout_lines[0] }}"

@@ -24,5 +24,5 @@ provider "yandex" {
   folder_id                = var.folder_id
   zone                     = var.default_zone
   cloud_id                 = var.cloud_id
-  service_account_key_file = file("~/NETOLOGY/devops-diplom-yandexcloud/.authorized_key.json")
+  service_account_key_file = file("../../keys.json")
 }

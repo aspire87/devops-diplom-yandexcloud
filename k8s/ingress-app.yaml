@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: diplom-ingress-app
+  namespace: diplom-app
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    name: diplom-ingress-app
+    author: au
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: diplom-au.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: diplom-app-svc
+                port:
+                  number: 8080

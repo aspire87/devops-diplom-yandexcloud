@@ -1,0 +1,26 @@
+---
+- name: Add gitlab helm chart
+  become: true
+  become_user: aspire
+  kubernetes.core.helm_repository:
+    name: gitlab
+    repo_url: https://charts.gitlab.io
+
+- name: Deploy gitlab runner in cluster 
+  become: true
+  become_user: aspire
+  kubernetes.core.helm:
+    atomic: true
+    name: gitlab
+    chart_ref: gitlab/gitlab-runner
+    create_namespace: true
+    release_namespace: gitlab
+    chart_version: 0.64.0
+    values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
+    purge: true
+
+
+- name: Wait 1 minutes when  pods up
+  ansible.builtin.wait_for:
+    timeout: 60
+    msg: "Waiting that monitoring pods is running....."

@@ -9,14 +9,6 @@ logLevel: info
 ogFormat: json
 sessionServer:
   enabled: false
-# rbac:
-#   create: true
-#   rules:
-#     - resources: ["pods", "secrets", "configmaps"]
-#       verbs: ["get", "list", "watch", "create", "patch", "delete", "update"]
-#     - apiGroups: [""]
-#       resources: ["pods/exec", "pods/attach"]
-#       verbs: ["create", "patch", "delete"]
 rbac:
   create: true
   rules:

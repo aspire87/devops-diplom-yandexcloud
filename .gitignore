@@ -13,3 +13,5 @@ personal.auto.tfvars
 
 *.key
 .vscode
+
+/ansible-playbook/gitlab/values.yaml

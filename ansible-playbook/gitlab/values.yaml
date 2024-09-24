@@ -18,7 +18,7 @@ rbac:
     - apiGroups: [""]
       resources: ["pods/log"]
       verbs: ["get"]
-  clusterWideAccess: true # попробовать  true
+  clusterWideAccess: true
   podSecurityPolicy:
     enabled: false
     resourceNames:

@@ -1,5 +1,4 @@
 ---
-
 - name: Join worker nodes to cluster
   become: yes
   become_user: aspire
@@ -13,7 +12,7 @@
   ansible.builtin.debug:
     msg: "{{ join_output }}"
 
-- name: Wait 2 minutes when calico pods up  on worker nodes
+- name: Wait 1 minutes when calico pods up  on worker nodes
   ansible.builtin.wait_for:
-    timeout: 120
+    timeout: 60
   when: join_output.changed

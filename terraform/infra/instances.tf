@@ -1,10 +1,10 @@
 resource "yandex_compute_instance" "kube-node" {
   for_each = { for key, value in var.hostname : key => value }
-  
-  name        = each.value.hostname
-  hostname    = each.value.hostname
-  platform_id = var.platform
-  zone        = var.default_zone
+
+  name               = each.value.hostname
+  hostname           = each.value.hostname
+  platform_id        = var.platform
+  zone               = var.default_zone
   service_account_id = data.terraform_remote_state.registry-terraform.outputs.sa_id
   resources {
     cores         = var.cpu_cores
@@ -39,10 +39,10 @@ resource "yandex_compute_instance" "kube-node" {
 
 
 resource "yandex_compute_instance" "gitlab" {
-  name        = "gitlab-dip"
-  hostname    = "gitlab-dip"
-  platform_id = var.platform
-  zone        = var.default_zone
+  name               = "gitlab-dip"
+  hostname           = "gitlab-dip"
+  platform_id        = var.platform
+  zone               = var.default_zone
   service_account_id = data.terraform_remote_state.registry-terraform.outputs.sa_id
   resources {
     cores         = 4

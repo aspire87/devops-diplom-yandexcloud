@@ -18,7 +18,7 @@
     release_namespace: monitoring
     values: "{{ lookup('template', 'values.yaml') | from_yaml }}"
           
-- name: Wait 2 minutes when  pods up
+- name: Wait 1 minutes when  pods up
   ansible.builtin.wait_for:
-    timeout: 120
+    timeout: 60
     msg: "Waiting that monitoring pods is running....."

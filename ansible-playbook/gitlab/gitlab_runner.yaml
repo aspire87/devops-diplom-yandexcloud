@@ -23,4 +23,4 @@
 - name: Wait 1 minutes when  pods up
   ansible.builtin.wait_for:
     timeout: 60
-    msg: "Waiting that monitoring pods is running....."
+    msg: "Waiting that gitlab-runner pods is running....."

@@ -31,12 +31,8 @@ spec:
     spec:
       containers:
         - name: webapp
-          image: cr.yandex/crptlt3lh3eul7tg40as/test-app:latest
+          image: cr.yandex/crptlt3lh3eul7tg40as/test-app:0.0.1
           imagePullPolicy: IfNotPresent
-          # resources:
-          #   limits:
-          #     memory: "128Mi"
-          #     cpu: "500m"
           ports:
             - containerPort: 8080
               protocol: TCP

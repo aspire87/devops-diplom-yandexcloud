@@ -1,7 +1,7 @@
 imagePullPolicy: IfNotPresent
 evisionHistoryLimit: 3
-gitlabUrl: http://51.250.13.135
-runnerRegistrationToken: "glrt-SRtDLo__ZzZ1KbY33-ZF"
+gitlabUrl: http://89.169.128.88
+runnerRegistrationToken: "glrt-gtzvzdkfbyu5zDb2q3we"
 erminationGracePeriodSeconds: 3600
 concurrent: 2
 checkInterval: 30

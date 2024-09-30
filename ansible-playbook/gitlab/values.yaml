@@ -1,7 +1,7 @@
 imagePullPolicy: IfNotPresent
 evisionHistoryLimit: 3
 gitlabUrl: http://89.169.128.88
-runnerRegistrationToken: "glrt-gtzvzdkfbyu5zDb2q3we"
+runnerRegistrationToken: "XXXXXXXXXXXXXXXXXXXXXXX"
 erminationGracePeriodSeconds: 3600
 concurrent: 2
 checkInterval: 30
@@ -9,14 +9,6 @@ logLevel: info
 ogFormat: json
 sessionServer:
   enabled: false
-# rbac:
-#   create: true
-#   rules:
-#     - resources: ["pods", "secrets", "configmaps"]
-#       verbs: ["get", "list", "watch", "create", "patch", "delete", "update"]
-#     - apiGroups: [""]
-#       resources: ["pods/exec", "pods/attach"]
-#       verbs: ["create", "patch", "delete"]
 rbac:
   create: true
   rules:

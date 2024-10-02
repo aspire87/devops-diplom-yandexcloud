@@ -130,14 +130,55 @@ kubectl port-forward svc/prometheus-grafana -n monitoring --address 0.0.0.0 8080
 
 ![](./img/gitlab_pipelines.png)
 
-![](./img/build_stage.png)
+![](./img/build_image.png)
 
 Как видим образ runner собирает образ и пушит его  в репозиторий ЯО
 
 ![](./img/registry_image.png)
 
 
-Осталось настроить ci/cd систему для автоматической сборки docker image и деплоя приложения при изменении кода.
+Осталось настроить ci/cd систему для автоматической сборки docker image и деплоя приложения при создании тэга в git
+
+в ```.ci-gilab.yml``` добавил  стейдж  для деплоя приложения в кластер k8s, который будет  запускаться только при создании тега в git, игнорируя изменение в ветке
+
+![](./img/deploy_stage.png)
+
+Сохраняем изменения  и проверяем  работу  стейджа
+Переходим в Code -> Tags и создаем новый тег
+
+![](./img/create_tag.png)
+
+Идем в Build -> Pipelines
+
+![](./img/jobs.png)
+
+![](./img/full_pipeline.png)
+
+Pipeline завершился успешно. При создании тега собрался образ  и запушился в регистри яндекса и потом  развернулся в кластере k8s. Проверить это  можно сравнив short commit в git (на скрине 476d1a38) и версию образа в кластере.
+
+![](./img/container_version_kube.png)
+
+Версии  коммита совпадают
+
+
+Теперь откроем  доступ к графана снаружи,  отредактировав  сервис.
+До:
+
+![](./img/grafana_svc_cluster.png)
+
+Конфиг:
+
+![](./img/grafana_svc_config.png)
+
+После:
+
+![](./img/grafana_svc_node.png)
+
+
+Проверяем доступ 
+
+![](./img/grafana_access.png)
+
 
 Цель:
 
